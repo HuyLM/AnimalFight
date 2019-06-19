@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Gemmob.Common.Data {
-    public class PersitenData : SecurePlayerPrefs {
+    public partial class PersitenData : SecurePlayerPrefs {
 
         #region uint
         public static uint ToUInt(object value) {

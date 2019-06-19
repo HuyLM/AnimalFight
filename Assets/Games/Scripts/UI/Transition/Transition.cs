@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class Transition : MonoSingletonKeepAlive<Transition> {
+public class Transition : SingletonFreeAlive<Transition> {
     [SerializeField] private Image background;
 
     [Header("Image - FillAmount (Nullable)")]

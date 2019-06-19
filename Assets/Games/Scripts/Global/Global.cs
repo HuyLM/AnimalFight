@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Global : MonoSingletonKeepAlive<Global> {
+public class Global : SingletonFreeAlive<Global> {
     public AppState AppState { get; private set; }
 
     public GameData GameData { get; private set; }

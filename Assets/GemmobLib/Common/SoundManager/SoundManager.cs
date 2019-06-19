@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Gemmob.Common.Data;
 
-public partial class SoundManager : MonoSingletonKeepAlive<SoundManager> {
+public partial class SoundManager : SingletonBindAlive<SoundManager> {
     [Header("==== Audio Source ====")]
     [SerializeField] private AudioSource backgroundMusic;
     [SerializeField] private AudioSource soundEffect;

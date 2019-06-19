@@ -4,7 +4,7 @@ using UnityEditor;
 
 namespace Gemmob.Common.EditorTools {
     public class SceneTools {
-        const string ProjectName = "Override2/";
+        const string ProjectName = "Game/";
 
         #region Editor Scenes Menu
 

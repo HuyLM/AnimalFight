@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class Scenes : MonoSingletonKeepAlive<Scenes> {
+public class Scenes : SingletonFreeAlive<Scenes> {
 
     string currentSceneName = "Logo";
     private double loadStartTime;
