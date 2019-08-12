@@ -125,30 +125,36 @@ public class Panel : MonoBehaviour {
 	[SerializeField] protected bool physicBackEnable = true;
 #endif
 
-	protected bool duplicated = false;
+    protected bool duplicated = false;
 
-	
-	protected virtual void Start() {
+
+    protected virtual void Start() {
 
 	}
 
-	public void Show(object data = null, bool duplicated = false) {
+	public virtual void Show(object data = null, bool duplicated = false) {
 		this.duplicated = duplicated;
 		gameObject.SetActive(true);
 	}
 
-	public void Hide(object data = null) {
+	public virtual void Hide(object data = null) {
 		if (duplicated) Destroy(gameObject);
 		else gameObject.SetActive(false);
 	}
 
-	public void Back() {
+	public virtual void Back() {
 #if UNITY_ANDROID
 		if (PhysicBackEnable) Hide();
 #endif
 	}
 
 	public virtual bool PhysicBackEnable {
-		get { return physicBackEnable; }
+		get {
+#if UNITY_ANDROID
+            return physicBackEnable;
+#else
+            return false;
+#endif
+        }
 	}
 }

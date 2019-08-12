@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public sealed class PoolManager : MonoBehaviour {
+public sealed class PoolManager : SingletonFreeAlive<PoolManager> {
     public enum StartupPoolMode { Awake, Start, CallManually };
+    public StartupPoolMode startupPoolMode;
+    public List<StartupPool> startupPools;
 
     [System.Serializable]
     public class StartupPool {
@@ -10,41 +12,43 @@ public sealed class PoolManager : MonoBehaviour {
         public GameObject prefab;
     }
 
-    static PoolManager _instance;
     static List<GameObject> tempList = new List<GameObject>();
 
     Dictionary<GameObject, List<GameObject>> pooledObjects = new Dictionary<GameObject, List<GameObject>>();
     Dictionary<GameObject, GameObject> spawnedObjects = new Dictionary<GameObject, GameObject>();
 
-    public StartupPoolMode startupPoolMode;
-    public StartupPool[] startupPools;
-
     bool startupPoolsCreated;
 
-    void Awake() {
-        if (_instance == null) {
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else {
+    protected override void Awake() {
+        if (instance != null) {
+            if (startupPools != null && startupPools.Count > 0) {
+                if (startupPoolMode == StartupPoolMode.Awake) {
+                    CreateStartupPools(this);
+                }
+                else {
+                    Instance.startupPools.AddRange(startupPools);
+                }
+            }
             DestroyImmediate(gameObject);
             return;
         }
+
+        base.Awake();
         if (startupPoolMode == StartupPoolMode.Awake)
-            CreateStartupPools();
+            CreateStartupPools(Instance);
     }
 
     void Start() {
         if (startupPoolMode == StartupPoolMode.Start)
-            CreateStartupPools();
+            CreateStartupPools(Instance);
     }
 
-    public static void CreateStartupPools() {
-        if (!instance.startupPoolsCreated) {
-            instance.startupPoolsCreated = true;
-            var pools = instance.startupPools;
-            if (pools != null && pools.Length > 0)
-                for (int i = 0; i < pools.Length; ++i)
+    public static void CreateStartupPools(PoolManager pooling) {
+        if (!pooling.startupPoolsCreated) {
+            pooling.startupPoolsCreated = true;
+            var pools = Instance.startupPools;
+            if (pools != null && pools.Count > 0)
+                for (int i = 0; i < pools.Count; ++i)
                     CreatePool(pools[i].prefab, pools[i].size);
         }
     }
@@ -53,14 +57,14 @@ public sealed class PoolManager : MonoBehaviour {
         CreatePool(prefab.gameObject, initialPoolSize);
     }
     public static void CreatePool(GameObject prefab, int initialPoolSize) {
-        if (prefab != null && !instance.pooledObjects.ContainsKey(prefab)) {
+        if (prefab != null && !Instance.pooledObjects.ContainsKey(prefab)) {
             var list = new List<GameObject>();
-            instance.pooledObjects.Add(prefab, list);
+            Instance.pooledObjects.Add(prefab, list);
 
             if (initialPoolSize > 0) {
                 bool active = prefab.activeSelf;
                 prefab.SetActive(false);
-                Transform parent = instance.transform;
+                Transform parent = Instance.transform;
                 while (list.Count < initialPoolSize) {
                     var obj = Instantiate(prefab);
                     obj.transform.SetParent(parent);
@@ -93,7 +97,7 @@ public sealed class PoolManager : MonoBehaviour {
         List<GameObject> list;
         Transform trans;
         GameObject obj;
-        if (instance.pooledObjects.TryGetValue(prefab, out list)) {
+        if (Instance.pooledObjects.TryGetValue(prefab, out list)) {
             obj = null;
             if (list.Count > 0) {
                 while (obj == null && list.Count > 0) {
@@ -106,7 +110,7 @@ public sealed class PoolManager : MonoBehaviour {
                     trans.localPosition = position;
                     trans.localRotation = rotation;
                     obj.SetActive(true);
-                    instance.spawnedObjects.Add(obj, prefab);
+                    Instance.spawnedObjects.Add(obj, prefab);
                     return obj;
                 }
             }
@@ -115,7 +119,7 @@ public sealed class PoolManager : MonoBehaviour {
             trans.SetParent(parent);
             trans.localPosition = position;
             trans.localRotation = rotation;
-            instance.spawnedObjects.Add(obj, prefab);
+            Instance.spawnedObjects.Add(obj, prefab);
             return obj;
         }
         else {
@@ -148,15 +152,15 @@ public sealed class PoolManager : MonoBehaviour {
     }
     public static void Recycle(GameObject obj) {
         GameObject prefab;
-        if (instance.spawnedObjects.TryGetValue(obj, out prefab))
+        if (Instance.spawnedObjects.TryGetValue(obj, out prefab))
             Recycle(obj, prefab);
         else
             Destroy(obj);
     }
     static void Recycle(GameObject obj, GameObject prefab) {
-        instance.pooledObjects[prefab].Add(obj);
-        instance.spawnedObjects.Remove(obj);
-        obj.transform.SetParent(instance.transform);
+        Instance.pooledObjects[prefab].Add(obj);
+        Instance.spawnedObjects.Remove(obj);
+        obj.transform.SetParent(Instance.transform);
         obj.SetActive(false);
     }
 
@@ -164,7 +168,7 @@ public sealed class PoolManager : MonoBehaviour {
         RecycleAll(prefab.gameObject);
     }
     public static void RecycleAll(GameObject prefab) {
-        foreach (var item in instance.spawnedObjects)
+        foreach (var item in Instance.spawnedObjects)
             if (item.Value == prefab)
                 tempList.Add(item.Key);
         for (int i = 0; i < tempList.Count; ++i)
@@ -172,14 +176,14 @@ public sealed class PoolManager : MonoBehaviour {
         tempList.Clear();
     }
     public static void RecycleAll() {
-        tempList.AddRange(instance.spawnedObjects.Keys);
+        tempList.AddRange(Instance.spawnedObjects.Keys);
         for (int i = 0; i < tempList.Count; ++i)
             Recycle(tempList[i]);
         tempList.Clear();
     }
 
     public static bool IsSpawned(GameObject obj) {
-        return instance.spawnedObjects.ContainsKey(obj);
+        return Instance.spawnedObjects.ContainsKey(obj);
     }
 
     public static int CountPooled<T>(T prefab) where T : Component {
@@ -187,7 +191,7 @@ public sealed class PoolManager : MonoBehaviour {
     }
     public static int CountPooled(GameObject prefab) {
         List<GameObject> list;
-        if (instance.pooledObjects.TryGetValue(prefab, out list))
+        if (Instance.pooledObjects.TryGetValue(prefab, out list))
             return list.Count;
         return 0;
     }
@@ -197,7 +201,7 @@ public sealed class PoolManager : MonoBehaviour {
     }
     public static int CountSpawned(GameObject prefab) {
         int count = 0;
-        foreach (var instancePrefab in instance.spawnedObjects.Values)
+        foreach (var instancePrefab in Instance.spawnedObjects.Values)
             if (prefab == instancePrefab)
                 ++count;
         return count;
@@ -205,7 +209,7 @@ public sealed class PoolManager : MonoBehaviour {
 
     public static int CountAllPooled() {
         int count = 0;
-        foreach (var list in instance.pooledObjects.Values)
+        foreach (var list in Instance.pooledObjects.Values)
             count += list.Count;
         return count;
     }
@@ -216,7 +220,7 @@ public sealed class PoolManager : MonoBehaviour {
         if (!appendList)
             list.Clear();
         List<GameObject> pooled;
-        if (instance.pooledObjects.TryGetValue(prefab, out pooled))
+        if (Instance.pooledObjects.TryGetValue(prefab, out pooled))
             list.AddRange(pooled);
         return list;
     }
@@ -226,7 +230,7 @@ public sealed class PoolManager : MonoBehaviour {
         if (!appendList)
             list.Clear();
         List<GameObject> pooled;
-        if (instance.pooledObjects.TryGetValue(prefab.gameObject, out pooled))
+        if (Instance.pooledObjects.TryGetValue(prefab.gameObject, out pooled))
             for (int i = 0; i < pooled.Count; ++i)
                 list.Add(pooled[i].GetComponent<T>());
         return list;
@@ -237,7 +241,7 @@ public sealed class PoolManager : MonoBehaviour {
             list = new List<GameObject>();
         if (!appendList)
             list.Clear();
-        foreach (var item in instance.spawnedObjects)
+        foreach (var item in Instance.spawnedObjects)
             if (item.Value == prefab)
                 list.Add(item.Key);
         return list;
@@ -248,7 +252,7 @@ public sealed class PoolManager : MonoBehaviour {
         if (!appendList)
             list.Clear();
         var prefabObj = prefab.gameObject;
-        foreach (var item in instance.spawnedObjects)
+        foreach (var item in Instance.spawnedObjects)
             if (item.Value == prefabObj)
                 list.Add(item.Key.GetComponent<T>());
         return list;
@@ -256,7 +260,7 @@ public sealed class PoolManager : MonoBehaviour {
 
     public static void DestroyPooled(GameObject prefab) {
         List<GameObject> pooled;
-        if (instance.pooledObjects.TryGetValue(prefab, out pooled)) {
+        if (Instance.pooledObjects.TryGetValue(prefab, out pooled)) {
             for (int i = 0; i < pooled.Count; ++i)
                 Destroy(pooled[i]);
             pooled.Clear();
@@ -272,24 +276,6 @@ public sealed class PoolManager : MonoBehaviour {
     }
     public static void DestroyAll<T>(T prefab) where T : Component {
         DestroyAll(prefab.gameObject);
-    }
-
-    public static PoolManager instance {
-        get {
-            if (_instance != null)
-                return _instance;
-
-            _instance = FindObjectOfType<PoolManager>();
-            if (_instance != null)
-                return _instance;
-
-            var obj = new GameObject("ObjectPool");
-            obj.transform.localPosition = Vector3.zero;
-            obj.transform.localRotation = Quaternion.identity;
-            obj.transform.localScale = Vector3.one;
-            _instance = obj.AddComponent<PoolManager>();
-            return _instance;
-        }
     }
 }
 

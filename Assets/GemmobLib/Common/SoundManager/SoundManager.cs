@@ -14,41 +14,12 @@ public partial class SoundManager : SingletonBindAlive<SoundManager> {
     private List<AudioSource> loopAudios;
 
     private bool backgroundPausing;
-
-    public const string OnAdsAudioStart = "OnAdsAudioStart";
-    public const string OnAdsAudioFinish = "OnAdsAudioFinish";
-
+    
     public enum PlaySoundType { None, Override, Duplicate }
     
     protected override void OnAwake() {
     }
-
-    void OnEnable() {
-#if UNITY_IOS
-        EventDispatcher.AddListener(OnAdsAudioStart, AdsAudioStart);
-        EventDispatcher.AddListener(OnAdsAudioFinish, AdsAudioFinish);
-#endif
-    }
-
-    void OnDisable() {
-#if UNITY_IOS
-        EventDispatcher.RemoveListener(OnAdsAudioStart, AdsAudioStart);
-        EventDispatcher.RemoveListener(OnAdsAudioFinish, AdsAudioFinish);
-#endif
-    }
-
-    void AdsAudioStart() {
-#if UNITY_IOS
-        backgroundMusic.volume = 0;
-#endif
-    }
-
-    void AdsAudioFinish() {
-#if UNITY_IOS
-        backgroundMusic.volume = musicVolume;
-#endif
-    }
-
+    
     #region PrefData
     public bool BackgroundMusicEnable {
         get { return PersitenData.GetBool("BackgroundMusicEnable", true) && BackgroundVolume > 0; }
