@@ -18,7 +18,7 @@ namespace Gemmob.Common.Data {
 		public static string DecryptKey(string encryptedKey) {
 			if (encryptedKey.StartsWith(KeyPrefix)) {
 				var strippedKey = encryptedKey.Substring(KeyPrefix.Length);
-				return UserEncryption.DecryptString(strippedKey);
+				return Encryption.DecryptString(strippedKey);
 			}
 
 			throw new InvalidOperationException(
@@ -27,36 +27,36 @@ namespace Gemmob.Common.Data {
 
 
 		public static void SetFloat(string key, float value) {
-			var encryptedKey = UserEncryption.EncryptString(key);
-			var encryptedValue = UserEncryption.EncryptFloat(value);
+			var encryptedKey = Encryption.EncryptString(key);
+			var encryptedValue = Encryption.EncryptFloat(value);
 			PlayerPrefs.SetString(KeyPrefix + encryptedKey, ValueFloatPrefix + encryptedValue);
 		}
 
 
 		public static void SetInt(string key, int value) {
-			var encryptedKey = UserEncryption.EncryptString(key);
-			var encryptedValue = UserEncryption.EncryptInt(value);
+			var encryptedKey = Encryption.EncryptString(key);
+			var encryptedValue = Encryption.EncryptInt(value);
 			PlayerPrefs.SetString(KeyPrefix + encryptedKey, ValueIntPrefix + encryptedValue);
 		}
 
 
 		public static void SetString(string key, string value) {
-			var encryptedKey = UserEncryption.EncryptString(key);
-			var encryptedValue = UserEncryption.EncryptString(value);
+			var encryptedKey = Encryption.EncryptString(key);
+			var encryptedValue = Encryption.EncryptString(value);
 			PlayerPrefs.SetString(KeyPrefix + encryptedKey, ValueStringPrefix + encryptedValue);
 		}
 
 		public static object GetValue(string encryptedKey, string encryptedValue) {
 			if (encryptedValue.StartsWith(ValueFloatPrefix)) {
-				return GetFloat(UserEncryption.DecryptString(encryptedKey.Substring(KeyPrefix.Length)));
+				return GetFloat(Encryption.DecryptString(encryptedKey.Substring(KeyPrefix.Length)));
 			}
 
 			if (encryptedValue.StartsWith(ValueIntPrefix)) {
-				return GetInt(UserEncryption.DecryptString(encryptedKey.Substring(KeyPrefix.Length)));
+				return GetInt(Encryption.DecryptString(encryptedKey.Substring(KeyPrefix.Length)));
 			}
 
 			if (encryptedValue.StartsWith(ValueStringPrefix)) {
-				return GetString(UserEncryption.DecryptString(encryptedKey.Substring(KeyPrefix.Length)));
+				return GetString(Encryption.DecryptString(encryptedKey.Substring(KeyPrefix.Length)));
 			}
 
 			throw new InvalidOperationException(
@@ -65,30 +65,30 @@ namespace Gemmob.Common.Data {
 
 
 		public static float GetFloat(string key, float defaultValue = 0.0f) {
-			var encryptedKey = KeyPrefix + UserEncryption.EncryptString(key);
+			var encryptedKey = KeyPrefix + Encryption.EncryptString(key);
 			var fetchedString = PlayerPrefs.GetString(encryptedKey);
 
 			if (string.IsNullOrEmpty(fetchedString)) return defaultValue;
 			fetchedString = fetchedString.Remove(0, 1);
-			return UserEncryption.DecryptFloat(fetchedString);
+			return Encryption.DecryptFloat(fetchedString);
 		}
 
 		public static int GetInt(string key, int defaultValue = 0) {
-			var encryptedKey = KeyPrefix + UserEncryption.EncryptString(key);
+			var encryptedKey = KeyPrefix + Encryption.EncryptString(key);
 			var fetchedString = PlayerPrefs.GetString(encryptedKey);
 
 			if (string.IsNullOrEmpty(fetchedString)) return defaultValue;
 			fetchedString = fetchedString.Remove(0, 1);
-			return UserEncryption.DecryptInt(fetchedString);
+			return Encryption.DecryptInt(fetchedString);
 		}
 
 		public static string GetString(string key, string defaultValue = "") {
-			var encryptedKey = KeyPrefix + UserEncryption.EncryptString(key);
+			var encryptedKey = KeyPrefix + Encryption.EncryptString(key);
 			var fetchedString = PlayerPrefs.GetString(encryptedKey);
 
 			if (string.IsNullOrEmpty(fetchedString)) return defaultValue;
 			fetchedString = fetchedString.Remove(0, 1);
-			return UserEncryption.DecryptString(fetchedString);
+			return Encryption.DecryptString(fetchedString);
 		}
 
 		public static void SetBool(string key, bool value) {

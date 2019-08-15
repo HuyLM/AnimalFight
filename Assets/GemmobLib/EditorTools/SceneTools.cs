@@ -4,7 +4,7 @@ using UnityEditor;
 
 namespace Gemmob.Common.EditorTools {
     public class SceneTools {
-        const string ProjectName = "Game/";
+        const string ProjectName = "Games/";
 
         #region Editor Scenes Menu
 
@@ -26,11 +26,11 @@ namespace Gemmob.Common.EditorTools {
 
         [MenuItem(ProjectName + "Scenes/Open Game Scene", false, 1)]
         private static void OpenNewGameScene() {
-            UnityEditor.SceneManagement.EditorSceneManager.OpenScene(GetScenePath("CreationScene"));
+            UnityEditor.SceneManagement.EditorSceneManager.OpenScene(GetScenePath("GamePlay"));
         }
 
         private static string GetScenePath(string sceneName) {
-            return string.Format("Assets/Game/Scenes/{0}.unity", sceneName);
+            return string.Format("Assets/Games/Scenes/{0}.unity", sceneName);
         }
         #endregion
 

@@ -1,85 +1,69 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
+using DG.Tweening;
 
-public class Transition : SingletonFreeAlive<Transition> {
+public class Transition : SingletonBindAlive<Transition> {
     [SerializeField] private Image background;
+    public float fadeDuration = 0.3f;
+    
+    private bool transitionRunning = false;
 
-    [Header("Image - FillAmount (Nullable)")]
-    [SerializeField] private Image progress;
-
-    Coroutine fadeToCoroutine;
-
-    private Transform progressBar;
-
-    private IEFadeImage ieFadeComponent;
+    public enum TransitionType { Transition, Enter, Exit }
 
     protected override void OnAwake() {
         base.OnAwake();
         if (background == null) {
-            background = GetComponentInChildren<Image>();
-        }
-    
-        if (background) {
-            ieFadeComponent = background.GetComponent<IEFadeImage>();
-            if (ieFadeComponent == null) {
-                ieFadeComponent = background.gameObject.AddComponent<IEFadeImage>();
+            background = GetComponent<Image>();
+            if (background == null) {
+                Debug.LogError("Transition is Initialized but background image is NULL!");
             }
-        }
-
-        progressBar = progress.transform.parent;
-        if (progressBar == null) progressBar = progress.transform;
+        }    
     }
     
-    public void StartTransition(float duration = 0.5f, System.Action enterCallback = null, System.Action exitCallback = null) {
+    public void StartTransition(System.Action transitionEnterCallback = null, System.Action transitionExitCallback = null, float enterDelayTime = 0, float exitDelayTime = 0.2f) {
+        if (transitionRunning) return;
         if (background == null) return;
         if (!gameObject.activeSelf) gameObject.SetActive(true);
         if (!background.gameObject.activeSelf) background.gameObject.SetActive(true);
 
-        if (ieFadeComponent == null) return;
+        DoTransit(TransitionType.Enter, () => {
+            if (transitionEnterCallback != null) transitionEnterCallback.Invoke();
+            DoTransit(TransitionType.Exit, transitionExitCallback, exitDelayTime);
+        }, enterDelayTime, false);
+    }
 
-        if (fadeToCoroutine != null) {
-            StopCoroutine(fadeToCoroutine);
+    private void DoTransit(TransitionType transitionType, System.Action callback = null, float delayTime = 0, bool finish = true) {
+        transitionRunning = true;
+
+        if (delayTime > 0) {
+            DOVirtual.DelayedCall(delayTime, () => {
+                Transit(transitionType, callback, finish);
+            });
         }
+        else Transit(transitionType, callback, finish);
+    }
 
-        float dFade = 0.3f;
-        float dProgress = duration + 0.5f;
+    private void Transit(TransitionType transitionType, System.Action callback = null, bool finish = true) {
+        bool exit = transitionType == TransitionType.Exit;
 
-        ShowProgressBar(false);
-        fadeToCoroutine = ieFadeComponent.FadeIn(dFade, () => {
-            ShowProgressStatus(0, dProgress);
-            if (enterCallback != null) enterCallback.Invoke();
-            ieFadeComponent.FadeOut(dProgress, dFade, exitCallback);
+        Color colorBegin = background.color;
+        colorBegin.a = exit ? 1 : 0;
+        background.color = colorBegin;
+
+        background.DOFade(exit ? 0 : 1, fadeDuration).SetEase(Ease.InOutQuad).OnComplete(() => {
+            if (callback != null) callback.Invoke();
+            if (finish) {
+                transitionRunning = false;
+                gameObject.SetActive(false);
+            }
         });
     }
+   
+}
 
-    #region Progress loading
-
-    private void ShowProgressBar(bool show) {
-        if (progressBar == null) return;
-        progressBar.gameObject.SetActive(show);
+public static partial class MonoBehaviorExtension {
+    public static void DoTransition(this MonoBehaviour mono, System.Action transitionEnterCallback = null, System.Action transitionExitCallback = null,
+                                    float enterDelayTime = 0, float exitDelayTime = 0.2f) {
+        Transition.Instance.StartTransition(transitionEnterCallback, transitionExitCallback, enterDelayTime, exitDelayTime);
     }
-
-    private void ShowProgressStatus(float delayTime, float duration) {
-        if (progress == null) return;
-        StartCoroutine(IEProgress(progress, delayTime, duration));
-    }
-
-    private IEnumerator IEProgress(Image img, float delayTime, float duration) {
-        if (img == null) yield break;
-
-        if (delayTime > 0) yield return new WaitForSeconds(delayTime);
-        ShowProgressBar(true);
-
-        float elapse = 0;
-        while(elapse < duration) {
-            elapse += Time.deltaTime;
-            if (elapse > duration) elapse = duration;
-            img.fillAmount = elapse / duration;
-            yield return null;
-        }
-
-        ShowProgressBar(false);
-    }
-    #endregion
 }

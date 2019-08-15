@@ -3,13 +3,20 @@
 /**<summary> Singleton class which is not MonoBehavior</summary> */
 public class Singleton<T> where T : new() {
     protected static T instance;
+    private bool initialized = false;
 
     public static T Instance {
         get {
             if (instance != null) return instance;
             instance = new T();
+            (instance as Singleton<T>).Initialize();
             return instance;
         }
+    }
+
+    protected virtual void Initialize() {
+        if (initialized) return;
+        initialized = true;
     }
 }
 
