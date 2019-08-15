@@ -32,6 +32,4 @@ sysinfo.txt
 
 # Builds
 *.apk
-*.unitypackage
-Assets/GemmobLib/Common/UI/HUD/Example/
-Assets/GemmobLib/Common/UI/HUD/Example.meta
+*.aab
