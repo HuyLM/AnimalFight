@@ -15,7 +15,7 @@ public class Global : SingletonFreeAlive<Global> {
 	public void GoHomeScene(System.Action callback = null, System.Action exitCallback = null) {
 		if (AppState == AppState.OnHome) return;
         AppState = AppState.OnHome;
-        Transition.Instance.StartTransition(loadSceneDelayTime, () => {
+        Transition.Instance.StartTransition(() => {
                 Scenes.Instance.LoadAsync(SceneDefined.Index.Home, null, callback, loadSceneDelayTime);
             }, exitCallback
             );
@@ -27,7 +27,7 @@ public class Global : SingletonFreeAlive<Global> {
             return;
         }
         AppState = AppState.OnIngame;
-        Transition.Instance.StartTransition(loadSceneDelayTime, () => {
+        Transition.Instance.StartTransition(() => {
             Scenes.Instance.LoadAsync(SceneDefined.Index.GamePlay, null, null, loadSceneDelayTime);
         });
     }
