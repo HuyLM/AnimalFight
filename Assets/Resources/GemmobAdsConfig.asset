@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d1620c7bd7bd2542adcef00beb3b669, type: 3}
+  m_Name: GemmobAdsConfig
+  m_EditorClassIdentifier: 
+  enableAndroid: 1
+  androidApiLink: https://api.gemmob.com/api/ddf1973addcc6d8638bf1bea4efae68f
+  enableIos: 0
+  iosApiLink: 
+  testDeviceId: 
+  useBannerTop: 0
+  useBannerBottom: 0
+  useInterstitial: 0
+  useRewardVideo: 0
+  enableTest: 0
