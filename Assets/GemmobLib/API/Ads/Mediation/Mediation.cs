@@ -18,7 +18,7 @@ public partial class Mediation : Singleton<Mediation> {
     #endregion
 
     #region Property
-    private static Config.AdmobInfo AdmobInfo {
+    private static AdsConfig.AdmobInfo AdmobInfo {
         get { return AdsSetting.LoadLocalAdmobInfo(); }
     }
 

@@ -58,7 +58,6 @@ namespace Gemmob.API.Ads {
 #if PRODUCTION_BUILD
             adRequest.AddTestDevice(AdRequest.TestDeviceSimulator)
                     .AddTestDevice(GemmobAdsConfig.Instance.testDeviceId);
-            }
 #endif
             return adRequest.Build();
         }

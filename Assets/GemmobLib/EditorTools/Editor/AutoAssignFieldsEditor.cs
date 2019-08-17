@@ -2,8 +2,9 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using System.Reflection;
+using Gemmob.Common;
 
-namespace Gemmob.Common {
+namespace Gemmob.EditorTools {
     [CustomEditor(typeof(AutoAssignFields))]
     public class AutoAssignFieldsEditor : Editor {
         private MonoBehaviour[] components;
@@ -28,7 +29,7 @@ namespace Gemmob.Common {
                 cb.Assign();
             }
 
-            EditorTools.EditorUtils.HorizontalLine();
+            EditorUtils.HorizontalLine();
             showAssigned = EditorGUILayout.Foldout(showAssigned, "Auto Assigned Values", true);
             if (showAssigned)
                 ShowAssignments();

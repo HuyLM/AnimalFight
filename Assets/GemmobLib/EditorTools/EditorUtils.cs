@@ -2,18 +2,84 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Gemmob.Common.EditorTools {
+namespace Gemmob.EditorTools {
     public static class EditorUtils {
         #region Inspector
-        //public static bool DrawFoldout(bool foldout, ) {
-
-        //}
-
-        public static void HorizontalLine(int height = 2) {
+        public static void HorizontalLine(float height = 2) {
             GUIStyle styleHR = new GUIStyle(GUI.skin.box);
             styleHR.stretchWidth = true;
             styleHR.fixedHeight = height;
             GUILayout.Box("", styleHR);
+        }
+
+        public static void VerticalLine(float width = 2) {
+            GUIStyle styleHR = new GUIStyle(GUI.skin.horizontalScrollbar);
+            styleHR.stretchHeight = true;
+            styleHR.fixedWidth = width;
+            GUILayout.Box("", styleHR);
+        }
+
+        public static void BeginHorizontal(System.Action draw, string labelName = "", int labelWidth = -1) {
+            if (draw == null) return;
+            GUILayout.BeginHorizontal();
+            {
+                if (!string.IsNullOrEmpty(labelName)) {
+                    if (labelWidth > 0) GUILayout.Label(labelName, GUILayout.Width(labelWidth));
+                    else GUILayout.Label(labelName);
+                }
+                draw.Invoke();
+                GUILayout.EndHorizontal();
+            }
+        }
+
+        public static void BeginVertical(System.Action draw, string labelName = "", int labelWidth = -1) {
+            if (draw == null) return;
+            GUILayout.BeginVertical();
+            {
+                if (!string.IsNullOrEmpty(labelName)) {
+                    if (labelWidth > 0) GUILayout.Label(labelName, GUILayout.Width(labelWidth));
+                    else GUILayout.Label(labelName);
+                }
+                draw.Invoke();
+                GUILayout.EndVertical();
+            }
+        }
+
+        public static void BeginScrollView(ref Vector3 scrollPos, System.Action draw) {
+            if (draw == null) return;
+            scrollPos = GUILayout.BeginScrollView(scrollPos);
+            {
+                draw.Invoke();
+                GUILayout.EndScrollView();
+            }
+        }
+
+        public static void BeginHorizontal(this EditorWindow editor, System.Action draw) {
+            BeginHorizontal(draw);
+        }
+
+        public static void BeginHorizontal(this EditorWindow editor, string labelName, System.Action draw) {
+            BeginHorizontal(draw, labelName);
+        }
+
+        public static void BeginHorizontal(this EditorWindow editor, string labelName, int labelWidth, System.Action draw) {
+            BeginHorizontal(draw, labelName, labelWidth);
+        }
+
+        public static void BeginVertical(this EditorWindow editor, System.Action draw) {
+            BeginVertical(draw);
+        }
+
+        public static void BeginVertical(this EditorWindow editor, string labelName, System.Action draw) {
+            BeginVertical(draw, labelName);
+        }
+
+        public static void BeginVertical(this EditorWindow editor, string labelName, int labelWidth, System.Action draw) {
+            BeginVertical(draw, labelName, labelWidth);
+        }
+
+        public static void BeginScrollView(this EditorWindow editor, ref Vector3 scrollPos, System.Action draw) {
+            BeginScrollView(ref scrollPos, draw);
         }
 
         public static void DrawProperty<T>(this T obj, string label, float labelWidth = 120) where T : Object {
@@ -23,7 +89,7 @@ namespace Gemmob.Common.EditorTools {
             EditorGUILayout.EndHorizontal();
         }
 
-        public static void DrawField<T>(this T obj, string label, float labelWidth = 120) where T : Object{
+        public static void DrawField<T>(this T obj, string label, float labelWidth = 120) where T : Object {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(label, GUILayout.Width(120));
             obj = (T)EditorGUILayout.ObjectField(obj, typeof(T), true);
@@ -65,7 +131,7 @@ namespace Gemmob.Common.EditorTools {
             else {
                 result = EditorGUILayout.PropertyField((SerializedProperty)obj);
             }
-        
+
             EditorGUILayout.EndHorizontal();
             return result;
         }

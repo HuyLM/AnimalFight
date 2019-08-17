@@ -1,0 +1,126 @@
+#!groovy
+import groovy.json.JsonSlurper
+import java.net.URL
+@Library('utils') _
+pipeline {
+    agent {label '%BuildNode%'}
+    parameters {
+        choice(name: 'BUILD_DEV', choices: ['DEFAULT', 'BUILD', 'NOT-BUILD'], description: 'Build Dev')
+        choice(name: 'BUILD_ARM', choices: ['DEFAULT', 'BUILD', 'NOT-BUILD'], description: 'Build Arm')
+        choice(name: 'BUILD_X86', choices: ['DEFAULT', 'BUILD', 'NOT-BUILD'], description: 'Build X86')
+
+    }
+    options {
+        timeout(time: %BuildTimeout%, unit: 'MINUTES')
+        disableConcurrentBuilds()
+    }
+    post {
+        success {
+            sendSuccessToSkype()
+        }
+        failure {
+            sendFailureToSkype()
+        }
+    }
+    stages {
+        stage("Init") {
+            steps { initialize() }
+        }
+		stage("Clean") {
+            steps { deleteBuild() }
+        }
+
+        stage("Build Arm") {
+		    when {
+		        not {
+		            environment name: 'BUILD_ARM', value: 'NOT-BUILD'
+                }
+                anyOf {
+                    branch 'release*'
+                    branch 'master'
+                    environment name: 'BUILD_ARM', value: 'BUILD'
+                }
+            }
+            steps { buildArm() }
+        }
+		stage("Build X86") {
+		    when {
+		        not {
+		             environment name: 'BUILD_X86', value: 'NOT-BUILD'
+                }
+                anyOf {
+                     branch 'release*'
+                     branch 'master'
+                     environment name: 'BUILD_X86', value: 'BUILD'
+                }
+            }
+            steps { buildX86() }
+        }
+        stage("Build Arm Dev") {
+		    when {
+		        not {
+		            environment name: 'BUILD_DEV', value: 'NOT-BUILD'
+                }
+                anyOf {
+                    environment name: 'BUILD_DEV', value: 'BUILD'
+                    not {
+                        anyOf {
+                            branch 'release*'
+                            branch 'master'
+                        }                  
+                    }
+                }
+            }   
+            steps { buildArmDev() }
+        }
+        stage("archiveKeyStore") {
+            steps { archiveKeyStore() }
+        }
+    }
+}
+
+def sendSuccessToSkype() {
+    echo "Success Build"
+    skype.sendGemmobSkype(env.SKYPE_ID, "*----------* Build Success *----------*\n" + env.BASE_MESSAGE)
+}
+def sendFailureToSkype() {
+    echo "Failure Build"
+    skype.sendGemmobSkype(env.SKYPE_ID, "*----------* Build Failure *----------*\n" + env.BASE_MESSAGE)
+}
+
+
+def initialize() {
+    env.SKYPE_ID = "%GroupSkypeId%"
+    env.UNITY_VERSION = "%UnityBuildVersion%"
+    env.CHANGE_LOG  = changelog.info()
+    env.BASE_MESSAGE = "Links : ${env.BUILD_URL}${env.CHANGE_LOG} " 
+    env.PWD = pwd()
+}
+
+def buildArmDev() {
+    unity.buildWindows(env.PWD, "Gemmob.Common.BuildTool.BuildArmDev", env.UNITY_VERSION)
+    archiveArtifacts artifacts: 'Builds/dev_*_arm.apk', fingerprint: true
+}
+
+def buildArm() {
+    unity.buildWindows(env.PWD, "Gemmob.Common.BuildTool.BuildArm", env.UNITY_VERSION)
+    archiveArtifacts artifacts: 'Builds/release_*_arm.apk', fingerprint: true
+}
+
+def buildX86() {
+    unity.buildWindows(env.PWD, "Gemmob.Common.BuildTool.BuildX86", env.UNITY_VERSION)
+    archiveArtifacts artifacts: 'Builds/release_*_x86.apk', fingerprint: true
+
+}
+
+def archiveKeyStore() {
+    archiveArtifacts artifacts: '*.keystore', fingerprint: true
+}
+
+def deleteBuild(){
+    echo "Delete Build folder"
+    dir('Builds') {
+        deleteDir()
+    }
+}
+

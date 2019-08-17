@@ -13,8 +13,8 @@ using Gemmob.API.Ads;
 namespace Gemmob.EditorTools {
     internal class AdsEditor : EditorWindow {
         public class ConfigViewer : ScriptableObject {
-            public Config.ApiInfo iosConfig;
-            public Config.ApiInfo androidConfig;
+            public AdsConfig.ApiInfo iosConfig;
+            public AdsConfig.ApiInfo androidConfig;
         }
 
         private static readonly string[] labels = { "Android Config", "iOs Config" };
@@ -23,11 +23,9 @@ namespace Gemmob.EditorTools {
         private const string ConfigFileFolder = "Assets/Resources/";
 
 
-        [MenuItem("GEM Tools/Gemmob Ads", false, 10)]
+        [MenuItem("Gemmob/Ads Config", false, 10)]
         public static void OpenLevelEditorWindow() {
             GetWindow<AdsEditor>("GEM ADS CONFIG").Show();
-            //GetWindowWithRect(typeof(AdsEditor), new Rect(0, 0, 500, 400), true,
-            //    "Gemmob Ads Tool");
         }
 
 
@@ -38,7 +36,7 @@ namespace Gemmob.EditorTools {
         private ConfigViewer configViewer;
         private Vector2 scroller;
 
-        private Config.ApiInfo Download(string url) {
+        private AdsConfig.ApiInfo Download(string url) {
             EditorUtility.DisplayCancelableProgressBar("Download", "Downloading...", 0);
             Logs.LogFormat("[ADS] request download url : {0} ", url);
             var www = UnityWebRequest.Get(url);
@@ -60,7 +58,7 @@ namespace Gemmob.EditorTools {
 
             var text = www.downloadHandler.text;
             try {
-                return JsonUtility.FromJson<Config.ApiInfo>(text);
+                return JsonUtility.FromJson<AdsConfig.ApiInfo>(text);
             } catch (Exception) {
                 ShowNotification(new GUIContent(string.Format("Canot parse json  from  download  url: {0}", url)));
                 return null;
@@ -151,9 +149,9 @@ namespace Gemmob.EditorTools {
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("Use Banner ", GUILayout.Width(150));
                 int option = GemmobAdsConfig.Instance.useBannerTop ? 1 : GemmobAdsConfig.Instance.useBannerBottom ? 2 : 0 ;
-                option = EditorGUILayout.IntPopup(option, new string[] { "Not use", "Top", "Bottom" }, new int[] { 0, 1, 2}, GUILayout.Width(150));
-                GemmobAdsConfig.Instance.useBannerTop = option == 1;
-                GemmobAdsConfig.Instance.useBannerBottom = option == 2;
+                option = EditorGUILayout.IntPopup(option, new string[] { "Not use", "Top", "Bottom", "All" }, new int[] { 0, 1, 2, 3}, GUILayout.Width(150));
+                GemmobAdsConfig.Instance.useBannerTop = option == 1 || option == 3;
+                GemmobAdsConfig.Instance.useBannerBottom = option == 2 || option == 3;
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("useInterstitial"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("useRewardVideo"));
@@ -224,7 +222,7 @@ namespace Gemmob.EditorTools {
             }
         }
 
-        private static void WriteConfigFileToResouceFolder(Config.ApiInfo config, string fileName) {
+        private static void WriteConfigFileToResouceFolder(AdsConfig.ApiInfo config, string fileName) {
             Assert.IsNotNull(config);
             if (!Directory.Exists(ConfigFileFolder)) {
                 Logs.LogFormat("Create folder {0}", ConfigFileFolder);
@@ -282,7 +280,7 @@ namespace Gemmob.EditorTools {
             }
         }
 
-        public static void SetPlayerSetingBuilTargetGroup(Config.ApiInfo Infor, BuildTargetGroup buildTargetGroup) {
+        public static void SetPlayerSetingBuilTargetGroup(AdsConfig.ApiInfo Infor, BuildTargetGroup buildTargetGroup) {
             if (Infor != null) {
                 if (!PlayerSettings.strippingLevel.Equals(StrippingLevel.StripAssemblies)) {
                     PlayerSettings.strippingLevel = StrippingLevel.StripAssemblies;

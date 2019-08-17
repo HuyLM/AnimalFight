@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Gemmob.API.Ads {
-	public class Config {
+	public class AdsConfig {
 		// Class
 
 		[Serializable]

@@ -24,32 +24,32 @@ namespace Gemmob.API.Ads {
         private const string AdsConfigKey = "GemmobAds";
         private const string ConfigFileFolder = "Assets/Resources/";
 
-        public static Config.AdmobInfo AndroidAdmobInfo {
+        public static AdsConfig.AdmobInfo AndroidAdmobInfo {
             get {
-                return new Config.AdmobInfo(AndroidAppId, BannerAndroidAdUnitId, InterstitialAndroidAdUnitId, RewardedAndroidAdUnitId);
+                return new AdsConfig.AdmobInfo(AndroidAppId, BannerAndroidAdUnitId, InterstitialAndroidAdUnitId, RewardedAndroidAdUnitId);
             }
         }
 
-        public static Config.AdmobInfo IosAdmobInfo {
+        public static AdsConfig.AdmobInfo IosAdmobInfo {
             get {
-                return new Config.AdmobInfo(IOSAppId, BannerIOSAdUnitId, InterstitialIOSAdUnitId, RewardedIOSAdUnitId);
+                return new AdsConfig.AdmobInfo(IOSAppId, BannerIOSAdUnitId, InterstitialIOSAdUnitId, RewardedIOSAdUnitId);
             }
         }
 
-        public static Config.ApiInfo LoadIosConfigFromResouceFolder() {
+        public static AdsConfig.ApiInfo LoadIosConfigFromResouceFolder() {
             return LoadConfigFromResouceFolder(IosConfigFileName);
         }
 
-        public static Config.ApiInfo LoadAndroidConfigFromResouceFolder() {
+        public static AdsConfig.ApiInfo LoadAndroidConfigFromResouceFolder() {
             return LoadConfigFromResouceFolder(AndroidConfigFileName);
         }
 
-        public static Config.ApiInfo LoadConfigFromResouceFolder(string fileName) {
+        public static AdsConfig.ApiInfo LoadConfigFromResouceFolder(string fileName) {
             try {
                 Debug.Log(fileName);
                 var textAsset = Resources.Load<TextAsset>(fileName);
                 var decryptString = Encryption.DecryptString(textAsset.text);
-                var config = JsonUtility.FromJson<Config.ApiInfo>(decryptString);
+                var config = JsonUtility.FromJson<AdsConfig.ApiInfo>(decryptString);
                 Logs.LogFormat("Load Config from json file {0}", fileName);
                 return config;
             }
@@ -63,11 +63,11 @@ namespace Gemmob.API.Ads {
             }
         }
 
-        public static Config.ApiInfo LoadLocalApiInfo() {
+        public static AdsConfig.ApiInfo LoadLocalApiInfo() {
             try {
                 var jsonText = SecurePlayerPrefs.GetString(AdsConfigKey);
                 if (!string.IsNullOrEmpty(jsonText)) {
-                    var config = JsonUtility.FromJson<Config.ApiInfo>(jsonText);
+                    var config = JsonUtility.FromJson<AdsConfig.ApiInfo>(jsonText);
                     Logs.Log("Load Config from PlayerPrefs");
                     return config;
                 }
@@ -84,7 +84,7 @@ namespace Gemmob.API.Ads {
             return LoadConfigFromResouceFolder(GetConfigFileName());
         }
 
-        public static Config.AdmobInfo LoadLocalAdmobInfo() {
+        public static AdsConfig.AdmobInfo LoadLocalAdmobInfo() {
 
             if (GemmobAdsConfig.Instance.enableTest) {
 
@@ -111,7 +111,7 @@ namespace Gemmob.API.Ads {
 #endif
         }
 
-        private static void SaveToLocalConfig(Config.ApiInfo config) {
+        private static void SaveToLocalConfig(AdsConfig.ApiInfo config) {
             try {
                 SecurePlayerPrefs.SetString(AdsConfigKey, JsonUtility.ToJson(config));
             }

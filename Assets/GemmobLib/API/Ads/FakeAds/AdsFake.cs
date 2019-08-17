@@ -18,6 +18,7 @@ public class AdsFake : MonoBehaviour {
 #endif
         if (prefab == null) {
             Logs.LogError("[AdsFake] Can't find AdsFake prefab from Resources");
+            if (onFailedCallback != null) onFailedCallback.Invoke();
             return;
         }
         AdsFake ads = Instantiate(prefab).GetComponent<AdsFake>();
@@ -62,7 +63,7 @@ public class AdsFake : MonoBehaviour {
             var text = btnSuccess.GetComponentInChildren<Text>();
             if (text != null) {
                 text.fontSize /= 2;
-                text.text = string.Format("This is a banner {0}x{1}\nTap to Hide", screenSize.x, smartheight);
+                text.text = string.Format("This is a banner {0}x{1}\nClick me!", screenSize.x, smartheight);
             }
 
             var body = title.transform.parent as RectTransform;
@@ -74,18 +75,11 @@ public class AdsFake : MonoBehaviour {
 
             body.sizeDelta = new Vector2(screenSize.x, smartheight);
 
-            if (type == Admob.Type.BannerTop) {
-                body.anchorMin = new Vector2(0, 1);
-                body.anchorMax = new Vector2(1, 1);
-                body.pivot = new Vector2(0.5f, 1);
-                body.anchoredPosition = new Vector2(0, -smartheight);
-            }
-            else {
-                body.anchorMin = new Vector2(0, 0);
-                body.anchorMax = new Vector2(1, 0);
-                body.pivot = new Vector2(0.5f, 0);
-                body.anchoredPosition = new Vector2(0, 0);
-            }
+            int pivot = type == Admob.Type.BannerTop ? 1 : 0;
+            body.anchorMin = new Vector2(0, pivot);
+            body.anchorMax = new Vector2(1, pivot);
+            body.pivot = new Vector2(0.5f, pivot);
+            body.anchoredPosition = new Vector2(0, 0);
         }
     }
 

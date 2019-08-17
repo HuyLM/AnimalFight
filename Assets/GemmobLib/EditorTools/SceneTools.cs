@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Gemmob.Common.EditorTools {
+namespace Gemmob.EditorTools {
     public class SceneTools {
         const string ProjectName = "Games/";
 
@@ -30,7 +30,14 @@ namespace Gemmob.Common.EditorTools {
         }
 
         private static string GetScenePath(string sceneName) {
-            return string.Format("Assets/Games/Scenes/{0}.unity", sceneName);
+            return string.Format("Assets/{0}/Scenes/{1}.unity", ProjectName, sceneName);
+        }
+
+        static string[] GetScenePaths() {
+            string[] scenes = new string[EditorBuildSettings.scenes.Length];
+            for (int i = 0; i < scenes.Length; i++)
+                scenes[i] = EditorBuildSettings.scenes[i].path;
+            return scenes;
         }
         #endregion
 
