@@ -36,48 +36,48 @@ namespace Gemmob.EditorTools {
                 drawHeaderCallback = (Rect rect) => { EditorGUI.LabelField(rect, "Scripting Define Environment"); }
             };
             reorderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
-                    var element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
-                    rect.y += 2;
+                var element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+                rect.y += 2;
 
-                    var labelWidth = 50;
-                    var checkboxWidth = 18;
-                    var targetWidth = 70;
-                    var oldWidth = rect.x;
-                    EditorGUI.PropertyField(new Rect(oldWidth, rect.y, checkboxWidth + labelWidth, EditorGUIUtility.singleLineHeight), 
-                                            element.FindPropertyRelative("develop"), GUIContent.none);
-                    oldWidth += checkboxWidth;
+                var labelWidth = 50;
+                var checkboxWidth = 18;
+                var targetWidth = 70;
+                var oldWidth = rect.x;
+                EditorGUI.PropertyField(new Rect(oldWidth, rect.y, checkboxWidth + labelWidth, EditorGUIUtility.singleLineHeight),
+                                        element.FindPropertyRelative("develop"), GUIContent.none);
+                oldWidth += checkboxWidth;
 
-                    EditorGUI.LabelField(
-                        new Rect(oldWidth, rect.y, labelWidth, EditorGUIUtility.singleLineHeight)
-                        ,
-                        "develop");
-                    oldWidth += labelWidth;
+                EditorGUI.LabelField(
+                    new Rect(oldWidth, rect.y, labelWidth, EditorGUIUtility.singleLineHeight)
+                    ,
+                    "develop");
+                oldWidth += labelWidth;
 
-                    EditorGUI.PropertyField(new Rect(oldWidth, rect.y, checkboxWidth + labelWidth, EditorGUIUtility.singleLineHeight), 
-                                            element.FindPropertyRelative("release"), GUIContent.none);
-                    oldWidth += checkboxWidth;
+                EditorGUI.PropertyField(new Rect(oldWidth, rect.y, checkboxWidth + labelWidth, EditorGUIUtility.singleLineHeight),
+                                        element.FindPropertyRelative("release"), GUIContent.none);
+                oldWidth += checkboxWidth;
 
-                    EditorGUI.LabelField(new Rect(oldWidth, rect.y, labelWidth, EditorGUIUtility.singleLineHeight) , "release");
-                    oldWidth += labelWidth;
+                EditorGUI.LabelField(new Rect(oldWidth, rect.y, labelWidth, EditorGUIUtility.singleLineHeight), "release");
+                oldWidth += labelWidth;
 
-                    var targetProperty = element.FindPropertyRelative("target");
-                    targetProperty.intValue = (int)(BuildConfig.CustomBuildTarget)EditorGUI.EnumFlagsField(
-                        new Rect(oldWidth, rect.y, targetWidth, EditorGUIUtility.singleLineHeight),
-                        (BuildConfig.CustomBuildTarget)targetProperty.intValue);
-                    oldWidth += 80;
+                var targetProperty = element.FindPropertyRelative("target");
+                targetProperty.intValue = (int)(BuildConfig.CustomBuildTarget)EditorGUI.EnumFlagsField(
+                    new Rect(oldWidth, rect.y, targetWidth, EditorGUIUtility.singleLineHeight),
+                    (BuildConfig.CustomBuildTarget)targetProperty.intValue);
+                oldWidth += 80;
 
 
-                    EditorGUI.PropertyField(new Rect(oldWidth + 10, rect.y, rect.width - oldWidth - 10, EditorGUIUtility.singleLineHeight),
-                                            element.FindPropertyRelative("key"), GUIContent.none);
-                    oldWidth += checkboxWidth;
-                };
+                EditorGUI.PropertyField(new Rect(oldWidth + 10, rect.y, rect.width - oldWidth - 10, EditorGUIUtility.singleLineHeight),
+                                        element.FindPropertyRelative("key"), GUIContent.none);
+                oldWidth += checkboxWidth;
+            };
         }
-        
+
         [MenuItem("Gemmob/Build %r", false, 10)]
         public static void OpenLevelEditorWindow() {
             GetWindow<BuildToolWindow>("GEM BUID TOOLs").Show();
         }
-        
+
         void OnGUI() {
             EditorGUI.BeginChangeCheck();
             serializedObject.Update();
@@ -94,9 +94,9 @@ namespace Gemmob.EditorTools {
                     case 2:
                         BuildIosTab();
                         break;
-                    //case 3:
-                    //    SetupJenkins();
-                    //    break;
+                        //case 3:
+                        //    SetupJenkins();
+                        //    break;
                 }
 
                 serializedObject.ApplyModifiedProperties();
@@ -176,9 +176,7 @@ namespace Gemmob.EditorTools {
 
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.LabelField(
-                new GUIContent(string.Format("Please add skype id {0} then find skype group at url {1}",
-                    SkypeUsername,
-                    SkypeUrl)));
+                new GUIContent(string.Format("Please add skype id {0} then find skype group at url {1}", SkypeUsername, SkypeUrl)));
             GUILayout.Space(10);
             EditorGUILayout.BeginHorizontal();
 
@@ -206,8 +204,7 @@ namespace Gemmob.EditorTools {
             if (GUILayout.Button("Generate Jenkinsfile")) {
                 var textAsset = Resources.Load<TextAsset>(JenkinsFileTplPath);
                 if (textAsset == null) {
-                    ShowNotification(new GUIContent(string.Format("Not found {0} in Resources folder",
-                        JenkinsFileTplPath)));
+                    ShowNotification(new GUIContent(string.Format("Not found {0} in Resources folder", JenkinsFileTplPath)));
                 }
                 else {
                     var textAssetText = textAsset.text;
@@ -225,9 +222,7 @@ namespace Gemmob.EditorTools {
                             FileMode.Create)) {
                             using (StreamWriter writer = new StreamWriter(fs)) {
                                 writer.Write(textAssetText);
-                                ShowNotification(
-                                    new GUIContent("Jenkins file is generated on " +
-                                                   Path.GetFullPath(JenkinsfilePath)));
+                                ShowNotification(new GUIContent("Jenkins file is generated on " + Path.GetFullPath(JenkinsfilePath)));
                             }
                         }
                     }
@@ -247,13 +242,11 @@ namespace Gemmob.EditorTools {
         }
 
         private bool CheckBeforeBuildIos() {
-            return EditorUtility.DisplayDialog("Warning!",
-                "Are you sure you want to build IOS", "Yes", "No");
+            return EditorUtility.DisplayDialog("Warning!", "Are you sure you want to build IOS", "Yes", "No");
         }
 
         private bool CheckBeforeBuildAndroid() {
-            return EditorUtility.DisplayDialog("Warning!",
-                "Are you sure you want to build ANDROID", "Yes", "No");
+            return EditorUtility.DisplayDialog("Warning!", "Are you sure you want to build ANDROID", "Yes", "No");
         }
 
         private void BuildIosTab() {
@@ -282,12 +275,10 @@ namespace Gemmob.EditorTools {
             this.BeginHorizontal(() => {
                 if (GUILayout.Button("Build Dev") && CheckBeforeBuildIos()) {
                     BuildTool.BuildIos(buildConfig, new BuildConfig.Options { isDevelop = true, autoOpen = true });
-                    return;
                 }
 
                 if (GUILayout.Button("Build Release") && CheckBeforeBuildIos()) {
                     EditorUtility.RevealInFinder(BuildTool.BuildIos(buildConfig, BuildConfig.DefaultOpenOptions));
-                    return;
                 }
             });
 
@@ -296,7 +287,6 @@ namespace Gemmob.EditorTools {
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Open Build Folder")) {
                 OpenBuildFolder();
-                return;
             }
 
 
@@ -310,8 +300,8 @@ namespace Gemmob.EditorTools {
 
             GUILayout.Space(20);
             EditorGUILayout.LabelField("AAB Config ", EditorStyles.boldLabel);
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("AndroidIl2CppForRelease"), new GUIContent("Il2CPP Release Build"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("achitecture"), new GUIContent("Build Achitecture"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("AndroidIl2CppForRelease"), new GUIContent("Il2CPP Release Build"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("achitecture"), new GUIContent("Build Achitecture"));
 
             GUILayout.Space(20);
             this.BeginHorizontal(() => {
@@ -320,7 +310,7 @@ namespace Gemmob.EditorTools {
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("BuildVerCode"), new GUIContent("Build Vercode (abc)"));
                 });
 
-                this.BeginVertical(() => { 
+                this.BeginVertical(() => {
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("KeyStorePass"));
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("keyAliasName"));
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("keyAliasPass"));
@@ -340,31 +330,27 @@ namespace Gemmob.EditorTools {
             GUILayout.Space(20);
             EditorGUILayout.LabelField("Build", EditorStyles.boldLabel);
             this.BeginHorizontal(() => {
-                if (GUILayout.Button("Build Dev APK")) {
+                if (GUILayout.Button("Build Dev APK v7")) {
                     BuildTool.BuildAndroidDevAPK();
                     OpenBuildFolder();
-                    return;
                 }
 
                 if (GUILayout.Button("Build Dev AAB")) {
                     BuildTool.BuildAndroidDevAAB();
                     OpenBuildFolder();
-                    return;
                 }
 
                 if (GUILayout.Button("Build Release (aab)")) {
                     BuildTool.BuildAndroidRelease();
                     OpenBuildFolder();
-                    return;
                 }
             });
 
             GUILayout.Space(20);
             EditorGUILayout.LabelField("Open Folder", EditorStyles.boldLabel);
-            this.BeginHorizontal(()=> {
+            this.BeginHorizontal(() => {
                 if (GUILayout.Button("Open Build Folder")) {
                     OpenBuildFolder();
-                    return;
                 }
 
                 if (GUILayout.Button("Generate KeyStore") && BuildTool.CheckKeyStore(buildConfig)) {

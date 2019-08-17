@@ -2,10 +2,13 @@
 using UnityEngine.UI;
 using DG.Tweening;
 
-public class Transition : SingletonBindAlive<Transition> {
-    [SerializeField] private Image background;
-    public float fadeDuration = 0.3f;
+[RequireComponent(typeof(Image))]
+public class Transition : SingletonResourcesAlive<Transition> {
+    [SerializeField] Color maskColor = Color.black;
+    [SerializeField] float fadeDuration = 0.3f;
     
+
+    private Image background;
     private bool transitionRunning = false;
 
     public enum TransitionType { Transition, Enter, Exit }
@@ -16,10 +19,12 @@ public class Transition : SingletonBindAlive<Transition> {
             background = GetComponent<Image>();
             if (background == null) {
                 Debug.LogError("Transition is Initialized but background image is NULL!");
+                return;
             }
-        }    
+            background.color = maskColor;
+        }
     }
-    
+
     public void StartTransition(System.Action transitionEnterCallback = null, System.Action transitionExitCallback = null, float enterDelayTime = 0, float exitDelayTime = 0.2f) {
         if (transitionRunning) return;
         if (background == null) return;
@@ -58,7 +63,7 @@ public class Transition : SingletonBindAlive<Transition> {
             }
         });
     }
-   
+
 }
 
 public static partial class MonoBehaviorExtension {
