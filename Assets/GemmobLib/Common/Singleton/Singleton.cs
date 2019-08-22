@@ -18,6 +18,9 @@ public class Singleton<T> where T : new() {
         if (initialized) return;
         initialized = true;
     }
+
+    /**<summary> Call T.Instance.Preload() at the first script startup to pre init. </summary>*/
+    public virtual void Preload() { }
 }
 
 /** <summary> Base Singleton class which is MonoBehavior </summary> */

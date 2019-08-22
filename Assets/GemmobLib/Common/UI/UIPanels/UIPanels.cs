@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEditor;
 #endif
 
-public class Menu<T> : MonoBehaviour where T : Component {
+public class UIPanels<T> : MonoBehaviour where T : Component {
 	[SerializeField] private string PrefabResourcesPath = "Prefabs/UI/Panels/";
 	private List<Panel> panels = new List<Panel>();
 
@@ -26,7 +26,7 @@ public class Menu<T> : MonoBehaviour where T : Component {
 				CanvasScaler cs = g.GetComponent<CanvasScaler>();
 				cs.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
 #if UNITY_EDITOR
-				cs.referenceResolution = UnityEditor.Handles.GetMainGameViewSize();
+				cs.referenceResolution = Handles.GetMainGameViewSize();
 #else
 				cs.referenceResolution = new Vector2(Screen.width, Screen.height);
 #endif
@@ -35,7 +35,7 @@ public class Menu<T> : MonoBehaviour where T : Component {
 		}
 	}
 
-	public enum ShowType { NotHide, DissmissCurrent, PauseCurrent, Duplicate }
+	public enum ShowType { DissmissCurrent, PauseCurrent, KeepCurrent, Duplicate }
 
 	private void Awake() {
 		if (instance == null) instance = this as T;
@@ -114,47 +114,5 @@ public class Menu<T> : MonoBehaviour where T : Component {
 
 		if (p == null) Debug.LogErrorFormat("[Menu] {0} is not assign", typeof(T).Name);
 		return p;
-	}
-}
-
-/** <summary> Base Panel in UI</summary> */
-public class Panel : MonoBehaviour {
-	[SerializeField] protected bool tapToHide = true;
-
-#if UNITY_ANDROID
-	[SerializeField] protected bool physicBackEnable = true;
-#endif
-
-    protected bool duplicated = false;
-
-
-    protected virtual void Start() {
-
-	}
-
-	public virtual void Show(object data = null, bool duplicated = false) {
-		this.duplicated = duplicated;
-		gameObject.SetActive(true);
-	}
-
-	public virtual void Hide(object data = null) {
-		if (duplicated) Destroy(gameObject);
-		else gameObject.SetActive(false);
-	}
-
-	public virtual void Back() {
-#if UNITY_ANDROID
-		if (PhysicBackEnable) Hide();
-#endif
-	}
-
-	public virtual bool PhysicBackEnable {
-		get {
-#if UNITY_ANDROID
-            return physicBackEnable;
-#else
-            return false;
-#endif
-        }
 	}
 }
