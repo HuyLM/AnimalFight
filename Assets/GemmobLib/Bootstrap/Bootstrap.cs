@@ -16,7 +16,7 @@ public class Bootstrap : MonoBehaviour {
         }
 
         if (preloadAds) {
-            var m = Mediation.Instance;
+            //var m = Mediation.Instance;
         }
     }
 
