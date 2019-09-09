@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 8f900f6f8e66cbd43846f77047b85bc4
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - AchievementData: {fileID: 11400000, guid: 7969700ecf12ed349a78d947442e4e6c, type: 2}
+  - DailyMissionData: {fileID: 11400000, guid: e19efc9db443db148957ff6bf3cc9c84, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

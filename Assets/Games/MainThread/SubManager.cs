@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SubManager : Manager
 {
-    protected virtual void OnEnable() {
+    protected virtual void Awake() {
         if (GameManager.Instance != null) {
             if (!Initialized) {
                 Init();
@@ -13,7 +13,7 @@ public class SubManager : Manager
         }
     }
 
-    protected virtual void OnDisable() {
+    protected virtual void OnDestroy() {
         if (GameManager.Instance != null) {
             GameManager.Instance.RemoveThread(this);
         }

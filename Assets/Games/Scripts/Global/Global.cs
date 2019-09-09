@@ -8,6 +8,7 @@ public class Global : SingletonFreeAlive<Global> {
     protected override void OnAwake() {
         Application.targetFrameRate = 60;
         GameData = new GameData();
+        GameResource.Instance.Initialize(); // ato
     }
 
     #region Load Scene
@@ -68,7 +69,7 @@ public class Global : SingletonFreeAlive<Global> {
     }
 
     public void OnApplicationFocus(bool focus) {
-        
+        SaveGameData();
     }
 
     public void OnApplicationQuit() {
