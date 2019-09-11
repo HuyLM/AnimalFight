@@ -46,11 +46,12 @@ public class Character : MonoBehaviour, ICharacter
     {
         get
         {
-            return Game.Instance.gameLoader.TargetOf(this);
+            //return Game.Instance.gameLoader.TargetOf(this);
+            return TestGameController.Instance.TargetOf(this);
         }
     }
 
-    protected SecuredDouble currentHp;
+    protected SecuredDouble currentHp = 1000;
     public SecuredDouble CurrentHp
     {
         get
@@ -71,7 +72,8 @@ public class Character : MonoBehaviour, ICharacter
     {
         get
         {
-            return upgrade.hpMax;
+            //return upgrade.hpMax;
+            return 1000;
         }
     }
 
@@ -82,7 +84,7 @@ public class Character : MonoBehaviour, ICharacter
         {
             if (upgrade == null)
             {
-                return 0;
+                return 100;
             }
             if (buff.Count == 0)
             {
@@ -160,12 +162,13 @@ public class Character : MonoBehaviour, ICharacter
         }
         if (target != null)
         {
-            if (Mathf.Abs(transform.position.x - target.transform.position.x) > characterData.RangeAttack())
+            if (Mathf.Abs(transform.position.x - target.transform.position.x) > 1f)// ato hard fix
             {
                 SetState(State.Moving);
             }
             else
             {
+                Debug.Log("attack");
                 SetState(State.Attack);
             }
         }

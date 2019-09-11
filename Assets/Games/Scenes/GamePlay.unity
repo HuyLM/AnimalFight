@@ -734,6 +734,7 @@ GameObject:
   - component: {fileID: 319810408}
   - component: {fileID: 319810407}
   - component: {fileID: 319810409}
+  - component: {fileID: 319810410}
   m_Layer: 0
   m_Name: Test
   m_TagString: Untagged
@@ -779,6 +780,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42fbde4e7f78840ecad898845fb705b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &319810410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 319810406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b0dc54a68afedf439110b5027bc2486, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heros:
+  - {fileID: 1577199582}
+  enemys:
+  - {fileID: 1471446854}
 --- !u!1 &451157463
 GameObject:
   m_ObjectHideFlags: 0
@@ -827,7 +844,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: e1ffb185a7696c74d9edd90d26cb7525, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -988,7 +1005,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: e1ffb185a7696c74d9edd90d26cb7525, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1768,7 +1785,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1471446846}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3522b7e8cabd8864e86fdbf84ca832f8, type: 3}
   m_Name: 
@@ -1812,7 +1829,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e80b7232215d5c4a8309aeb01a0bc9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TimeDelayAttack: 1
+  TimeDelayAttack: 2
 --- !u!114 &1471446853
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1840,7 +1857,7 @@ MonoBehaviour:
   group: 1
   type: 2
   targetTypes: 0200000003000000
-  hpView: {fileID: 1849611094}
+  hpView: {fileID: 451157465}
 --- !u!212 &1471446855
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1947,8 +1964,8 @@ GameObject:
   - component: {fileID: 1577199581}
   - component: {fileID: 1577199580}
   - component: {fileID: 1577199579}
-  - component: {fileID: 1577199578}
   - component: {fileID: 1577199577}
+  - component: {fileID: 1577199578}
   - component: {fileID: 1577199584}
   m_Layer: 0
   m_Name: Hero1
@@ -1993,7 +2010,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1577199575}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3522b7e8cabd8864e86fdbf84ca832f8, type: 3}
   m_Name: 
@@ -2037,7 +2054,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e80b7232215d5c4a8309aeb01a0bc9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TimeDelayAttack: 1
+  TimeDelayAttack: 2
 --- !u!114 &1577199581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2065,7 +2082,7 @@ MonoBehaviour:
   group: 0
   type: 2
   targetTypes: 0200000003000000
-  hpView: {fileID: 454922147}
+  hpView: {fileID: 483274253}
 --- !u!212 &1577199583
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2123,7 +2140,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1577199575}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 9a853c7f25142354eb810cf58449d971, type: 2}
   m_CullingMode: 0

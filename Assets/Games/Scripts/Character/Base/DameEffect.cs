@@ -30,7 +30,7 @@ public class DameEffect : MonoBehaviour
     void CreateDamEffect(Damage dam)
     {
         var rd = UnityEngine.Random.Range(-0.5f, 0.5f);
-        var randomDame = UnityEngine.Random.Range(0.8f, 1.2f);
+        var randomDame = 1;
         var txtDameClone = PoolManager.Spawn(objectDame, transform.parent, new Vector3(transform.position.x + rd, transform.position.y + rd+1f, 0), Quaternion.identity);
         txtDame = txtDameClone.GetComponent<TextMeshPro>();
         txtDameClone.transform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 0.05f).OnComplete(() =>
