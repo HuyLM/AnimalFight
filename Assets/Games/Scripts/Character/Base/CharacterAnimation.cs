@@ -21,6 +21,7 @@ public class CharacterAnimation : MonoBehaviour
         {
             character.OnMove += OnMove;
             character.OnAttack += OnAttack;
+            character.OnTakeHit += OnTakeHit;
         }
     }
 
@@ -41,6 +42,13 @@ public class CharacterAnimation : MonoBehaviour
         spriteRenderer.sortingOrder = (int)(-transform.position.y * 10);
     }
 
+    protected virtual void OnTakeHit(Damage damage) {
+        animator.SetTrigger("takehit");
+    }
+
+    public void PlayIdle() {
+        animator.Play("BraveIdle");
+    }
     protected virtual void OnDisable()
     {
         if (character != null)
