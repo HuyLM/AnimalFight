@@ -94,7 +94,7 @@ public class Game : SubManager {
 
         if(Input.GetKeyDown(KeyCode.Space)) {
             Level levelNext = GameResource.Instance.LevelNext(CurrentLevel);
-           PrefData.CurrentLevel = levelNext.Index;
+            PrefData.CurrentLevel = levelNext.Index;
             Load(levelNext);
         }
     }

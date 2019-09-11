@@ -11,7 +11,7 @@ public class Test : MonoBehaviour {
 
     private void Update() {
         if (Input.GetKeyDown(KeyCode.Space)) {
-            StackUI.Instance.Show<WinUI>();
+           // StackUI.Instance.Show<WinUI>();
         }
 
         if (Input.GetKeyDown(KeyCode.B)) {
